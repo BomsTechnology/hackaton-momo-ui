@@ -32,17 +32,72 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         elevation: 0,
+        leading: Container(
+          margin: const EdgeInsets.only(top: 10, left: 15),
+          child: CircleAvatar(
+            radius: 18,
+            backgroundColor: Colors.white,
+            child: Text(
+              'SM',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.ubuntu(
+                color: dBlue,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(top: 10, right: 4),
+            child: CircleAvatar(
+              radius: 22,
+              backgroundColor: Colors.white,
+              child: IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.qr_code_rounded,
+                  color: dBlue,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 10, left: 4),
+            child: CircleAvatar(
+              radius: 22,
+              backgroundColor: Colors.white,
+              child: IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.notifications_rounded,
+                  color: dBlue,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 15,
+          ),
+        ],
         backgroundColor: Colors.grey.shade200,
-        title: const Text('HomePage'),
+        centerTitle: true,
       ),
-      body: screens[index],
+      body: IndexedStack(
+        index: index,
+        children: screens,
+      ),
       bottomNavigationBar: TabBarWidget(
         index: index,
         onChangerTab: onChangerTab,
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: dBlue,
-        child: const Icon(Icons.sync_alt_rounded),
+        child: const Icon(
+          Icons.qr_code_rounded,
+          color: dYellow,
+        ),
         onPressed: () {},
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

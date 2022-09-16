@@ -62,12 +62,14 @@ class _TabBarWidgetState extends State<TabBarWidget> {
                 icon: icon,
               ),
             ),
-            Text(label,
-                style: GoogleFonts.ubuntu(
-                  color: isSelected ? dBlue : dGray,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ))
+            Text(
+              label,
+              style: GoogleFonts.ubuntu(
+                color: isSelected ? dBlue : dGray,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ],
         ));
   }

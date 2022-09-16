@@ -23,7 +23,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             child: Column(
               children: [
                 const Spacer(),
-                Image.asset('assets/onboarding1.png'),
+                Image.asset("assets/onboarding1.png"),
                 Text(
                   'Vos transactions Mobile Money faciles et rapides.',
                   textAlign: TextAlign.center,
@@ -70,17 +70,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                   ),
                 ),
-                // TextButton(
-                //   onPressed: () {},
-                //   child: Text(
-                //     "S'enregistrer",
-                //     style: GoogleFonts.ubuntu(
-                //       color: dBlue,
-                //       fontSize: 18,
-                //       fontWeight: FontWeight.w500,
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
