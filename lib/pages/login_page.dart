@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
+import 'package:hackaton_momo/pages/home/home_page.dart';
 import 'package:hackaton_momo/pages/register_page.dart';
+import 'package:hackaton_momo/pages/send_sms_page.dart';
+import 'package:hackaton_momo/services/auth.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -79,6 +83,10 @@ class _LoginPageState extends State<LoginPage> {
                             ? null
                             : 'Numéro de téléphone incorrect',
                         decoration: const InputDecoration(
+                          prefix: Text(
+                            '237',
+                            style: TextStyle(color: Colors.grey),
+                          ),
                           contentPadding: EdgeInsets.all(10),
                           border: OutlineInputBorder(),
                         ),
@@ -125,6 +133,25 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SendSmsPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Code d\accès oublié ?',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.ubuntu(
+                          color: dBlue,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -132,7 +159,15 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Map creds = {
+                      'phone': "237${phoneController.text.trim()}",
+                      'password': passwordController.text.trim(),
+                    };
+                    if (formKey.currentState!.validate()) {
+                      Provider.of<Auth>(context, listen: false).login(creds);
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: dBlue,
                     padding: const EdgeInsets.all(13),

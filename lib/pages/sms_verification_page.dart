@@ -55,7 +55,7 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(
