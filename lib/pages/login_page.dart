@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/home/home_page.dart';
 import 'package:hackaton_momo/pages/register_page.dart';
 import 'package:hackaton_momo/pages/send_sms_page.dart';
+import 'package:hackaton_momo/pages/sms_verification_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
+import 'package:hackaton_momo/utils/flash_message.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,6 +23,24 @@ class _LoginPageState extends State<LoginPage> {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   var _obscureText = true;
+  bool _isLoading = false;
+  final List correctNum = [
+    "670",
+    "671",
+    "672",
+    "673",
+    "674",
+    "675",
+    "676",
+    "677",
+    "678",
+    "679",
+    "650",
+    "651",
+    "652",
+    "653",
+    "654",
+  ];
 
   @override
   void dispose() {
@@ -79,7 +101,10 @@ class _LoginPageState extends State<LoginPage> {
                         textInputAction: TextInputAction.next,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         keyboardType: TextInputType.number,
-                        validator: (value) => value != null && value.length > 8
+                        validator: (value) => value != null &&
+                                value.length == 9 &&
+                                correctNum.contains(
+                                    phoneController.text.substring(0, 3))
                             ? null
                             : 'Numéro de téléphone incorrect',
                         decoration: const InputDecoration(
@@ -143,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                       child: Text(
-                        'Code d\accès oublié ?',
+                        'Code d\'accès oublié ?',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.ubuntu(
                           color: dBlue,
@@ -159,26 +184,26 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Map creds = {
-                      'phone': "237${phoneController.text.trim()}",
-                      'password': passwordController.text.trim(),
-                    };
-                    if (formKey.currentState!.validate()) {
-                      Provider.of<Auth>(context, listen: false).login(creds);
-                    }
-                  },
+                  onPressed: login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: dBlue,
                     padding: const EdgeInsets.all(13),
                   ),
-                  child: Text(
-                    'Se Connecter',
-                    style: GoogleFonts.ubuntu(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          'Se Connecter',
+                          style: GoogleFonts.ubuntu(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(
@@ -220,5 +245,44 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void login() async {
+    Map creds = {
+      'phone': "237${phoneController.text.trim()}",
+      'password': passwordController.text.trim(),
+    };
+
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+      var response =
+          await Provider.of<Auth>(context, listen: false).login(creds);
+      if (response.statusCode == 201) {
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      } else if (response.statusCode == 403) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SmsVerificationPage(
+              backWidget: LoginPage(),
+            ),
+          ),
+        );
+      } else {
+        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        FlashMessage.showSnackBar(jsonResponse['message'], context);
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }

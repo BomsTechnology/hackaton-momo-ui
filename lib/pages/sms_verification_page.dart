@@ -3,16 +3,27 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/home/home_page.dart';
+import 'package:hackaton_momo/pages/login_page.dart';
 import 'package:hackaton_momo/pages/register_page.dart';
+import 'package:hackaton_momo/utils/flash_message.dart';
 
 class SmsVerificationPage extends StatefulWidget {
-  const SmsVerificationPage({super.key});
-
+  const SmsVerificationPage({super.key, required this.backWidget});
+  final Widget backWidget;
   @override
   State<SmsVerificationPage> createState() => _SmsVerificationPageState();
 }
 
 class _SmsVerificationPageState extends State<SmsVerificationPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      FlashMessage.showSnackBar("Your phone number is not actived", context);
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -45,7 +56,15 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                widget.backWidget ?? LoginPage(),
+                          ),
+                        );
+                      },
                       child: Text(
                         'Changer le numéro de téléphone',
                         textAlign: TextAlign.center,

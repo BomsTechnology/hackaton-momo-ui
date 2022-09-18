@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
+import 'package:hackaton_momo/pages/onboarding_page.dart';
+import 'package:hackaton_momo/services/auth.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,6 +18,60 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
+      appBar: AppBar(
+        elevation: 0,
+        leading: Container(
+          margin: const EdgeInsets.only(top: 10, left: 15, bottom: 5),
+          child: CircleAvatar(
+            radius: 18,
+            backgroundColor: Colors.white,
+            child: Text(
+              'SM',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.ubuntu(
+                color: dBlue,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(top: 10, right: 4, bottom: 5),
+            child: CircleAvatar(
+              radius: 22,
+              backgroundColor: Colors.white,
+              child: IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.qr_code_rounded,
+                  color: dBlue,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 10, left: 4, bottom: 5),
+            child: CircleAvatar(
+              radius: 22,
+              backgroundColor: Colors.white,
+              child: IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.notifications_rounded,
+                  color: dBlue,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 15,
+          ),
+        ],
+        backgroundColor: dBlue,
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(15, 30, 15, 120),
         child: Column(
@@ -114,6 +171,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
+            ElevatedButton(
+                onPressed: () async {
+                  var response =
+                      await Provider.of<Auth>(context, listen: false).logout();
+                  if (response.statusCode == 201) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OnboardingPage(),
+                      ),
+                    );
+                  }
+                },
+                child: const Text('Deconnexion'))
           ],
         ),
       ),

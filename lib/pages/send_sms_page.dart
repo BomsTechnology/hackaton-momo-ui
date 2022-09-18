@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/reset_password_page.dart';
+import 'package:hackaton_momo/utils/flash_message.dart';
 
 class SendSmsPage extends StatefulWidget {
   const SendSmsPage({super.key});
@@ -13,6 +14,24 @@ class SendSmsPage extends StatefulWidget {
 class _SendSmsPageState extends State<SendSmsPage> {
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
+  final List correctNum = [
+    "670",
+    "671",
+    "672",
+    "673",
+    "674",
+    "675",
+    "676",
+    "677",
+    "678",
+    "679",
+    "650",
+    "651",
+    "652",
+    "653",
+    "654",
+  ];
+
   @override
   void dispose() {
     phoneController.dispose();
@@ -71,7 +90,10 @@ class _SendSmsPageState extends State<SendSmsPage> {
                         textInputAction: TextInputAction.next,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         keyboardType: TextInputType.number,
-                        validator: (value) => value != null && value.length > 8
+                        validator: (value) => value != null &&
+                                value.length == 9 &&
+                                correctNum.contains(
+                                    phoneController.text.substring(0, 3))
                             ? null
                             : 'Numéro de téléphone incorrect',
                         decoration: const InputDecoration(

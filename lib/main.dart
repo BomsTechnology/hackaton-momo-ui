@@ -4,6 +4,7 @@ import 'package:hackaton_momo/pages/home/home_page.dart';
 import 'package:hackaton_momo/pages/onboarding_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const dBlue = Color(0xFF0F6987);
 const bgGray = Color(0xFFB7D2DB);
@@ -50,10 +51,26 @@ class Started extends StatefulWidget {
 }
 
 class _StartedState extends State<Started> {
+  bool isAuth = false;
+
+  @override
+  void initState() {
+    _checkIfLoggedIn();
+    super.initState();
+  }
+
+  void _checkIfLoggedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token');
+    if (token != null) {
+      setState(() {
+        isAuth = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<Auth>(builder: (context, auth, child) {
-      return auth.authenticated ? const HomePage() : const OnboardingPage();
-    });
+    return isAuth ? const HomePage() : const OnboardingPage();
   }
 }
