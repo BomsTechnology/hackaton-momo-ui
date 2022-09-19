@@ -30,30 +30,33 @@ class FlashMessage {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(5),
+            Flexible(
+                    child:  Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Oh Snap!",
-                        style: GoogleFonts.ubuntu(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        text,
-                        style: GoogleFonts.ubuntu(
-                          color: Colors.white,
-                          fontSize: 14,
+                  child:  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Oh Snap!",
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700),
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                        const SizedBox(height: 5),
+                        Text(
+                          text,
+                          style: GoogleFonts.ubuntu(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )

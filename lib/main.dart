@@ -33,12 +33,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'BMMoney',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: dBlue,
       ),
-      home: Started(),
+      home: const Started(),
     );
   }
 }
@@ -55,11 +55,11 @@ class _StartedState extends State<Started> {
 
   @override
   void initState() {
-    _checkIfLoggedIn();
     super.initState();
+    _checkIfLoggedIn();
   }
 
-  void _checkIfLoggedIn() async {
+  Future<void> _checkIfLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
     if (token != null) {

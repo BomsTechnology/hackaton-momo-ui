@@ -25,7 +25,7 @@ class Auth extends ChangeNotifier {
         'Authorization': 'Bearer $token'
       };
 
-  login(Map creds) async {
+  login({required Map<String, dynamic> creds}) async {
     await _getToken();
     var url = Uri.https(_url, '/api/auth/login');
     var response =
@@ -55,7 +55,46 @@ class Auth extends ChangeNotifier {
     return response;
   }
 
-  void register() {
-    notifyListeners();
+  register({required Map<String, dynamic> creds}) async {
+    await _getToken();
+    var url = Uri.https(_url, '/api/auth/register');
+    var response =
+        await http.post(url, body: jsonEncode(creds), headers: _setHeaders());
+    if (response.statusCode == 201) {
+      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      _user = User.fromJson(jsonResponse['data']['user']);
+      token = jsonResponse['data']['token'];
+      await prefs.setString('user', jsonEncode(_user));
+      await prefs.setString('token', token);
+      _isLoggedIn = true;
+      notifyListeners();
+    }
+    return response;
+  }
+
+  sendSms({required String phone, required bool resetPassword}) async {
+    await _getToken();
+    var url = Uri.https(_url, "/api/auth/send-verification-sms/$phone");
+    return await http.post(url,
+        body: jsonEncode({"reset_password": resetPassword}),
+        headers: _setHeaders());
+  }
+
+  verification({required String phone, required String code}) async {
+    await _getToken();
+    var url = Uri.https(_url, "/api/auth/send-verification-sms/$phone");
+    var response = await http.post(url,
+        body: jsonEncode({"code": code}), headers: _setHeaders());
+
+    if (response.statusCode == 201) {
+      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      _user = User.fromJson(jsonResponse['data']['user']);
+      token = jsonResponse['data']['token'];
+      await prefs.setString('user', jsonEncode(_user));
+      await prefs.setString('token', token);
+      _isLoggedIn = true;
+      notifyListeners();
+    }
+    return response;
   }
 }

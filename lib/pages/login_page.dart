@@ -103,8 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                         keyboardType: TextInputType.number,
                         validator: (value) => value != null &&
                                 value.length == 9 &&
-                                correctNum.contains(
-                                    phoneController.text.substring(0, 3))
+                                correctNum.contains(value.substring(0, 3))
                             ? null
                             : 'Numéro de téléphone incorrect',
                         decoration: const InputDecoration(
@@ -248,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login() async {
-    Map creds = {
+    Map<String, dynamic> creds = {
       'phone': "237${phoneController.text.trim()}",
       'password': passwordController.text.trim(),
     };
@@ -258,7 +257,7 @@ class _LoginPageState extends State<LoginPage> {
         _isLoading = true;
       });
       var response =
-          await Provider.of<Auth>(context, listen: false).login(creds);
+          await Provider.of<Auth>(context, listen: false).login(creds: creds);
       if (response.statusCode == 201) {
         // ignore: use_build_context_synchronously
         Navigator.push(
@@ -268,11 +267,13 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
       } else if (response.statusCode == 403) {
+        // ignore: use_build_context_synchronously
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const SmsVerificationPage(
-              backWidget: LoginPage(),
+            builder: (context) => SmsVerificationPage(
+              phone: "237${phoneController.text.trim()}",
+              error: true,
             ),
           ),
         );

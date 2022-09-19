@@ -1,27 +1,51 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/home/home_page.dart';
-import 'package:hackaton_momo/pages/login_page.dart';
-import 'package:hackaton_momo/pages/register_page.dart';
+import 'package:hackaton_momo/services/auth.dart';
 import 'package:hackaton_momo/utils/flash_message.dart';
+import 'package:provider/provider.dart';
 
 class SmsVerificationPage extends StatefulWidget {
-  const SmsVerificationPage({super.key, required this.backWidget});
-  final Widget backWidget;
+  const SmsVerificationPage(
+      {super.key,
+      this.creds,
+      this.iCode,
+      required this.phone,
+      required this.error});
+  final bool error;
+  final String phone;
+  final String? iCode;
+  final Map<String, dynamic>? creds;
   @override
   State<SmsVerificationPage> createState() => _SmsVerificationPageState();
 }
 
 class _SmsVerificationPageState extends State<SmsVerificationPage> {
+  bool _isLoading = false;
+  final character1Controller = TextEditingController();
+  final character2Controller = TextEditingController();
+  final character3Controller = TextEditingController();
+  final character4Controller = TextEditingController();
+  String currentCode = "";
+  String code = "1234";
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      FlashMessage.showSnackBar("Your phone number is not actived", context);
-      setState(() {});
-    });
+    {
+      currentCode = widget.iCode!;
+      print(currentCode);
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (widget.error) {
+          FlashMessage.showSnackBar(
+              "Your phone number is not actived", context);
+          setState(() {});
+        }
+      });
+    }
   }
 
   @override
@@ -47,7 +71,7 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                 Row(
                   children: [
                     Text(
-                      '2376******81',
+                      '${widget.phone.substring(0, 5)}*****${widget.phone.substring(10)}',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.ubuntu(
                         color: Colors.grey,
@@ -57,13 +81,7 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                widget.backWidget ?? LoginPage(),
-                          ),
-                        );
+                        Navigator.of(context).pop();
                       },
                       child: Text(
                         'Changer le numéro de téléphone',
@@ -90,9 +108,12 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                         child: TextFormField(
                           onChanged: (value) {
                             if (value.length == 1) {
+                              code =
+                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
                               FocusScope.of(context).nextFocus();
-                            }
+                            } else {}
                           },
+                          controller: character1Controller,
                           onSaved: (pin1) {},
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
@@ -111,10 +132,13 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                         child: TextFormField(
                           onChanged: (value) {
                             if (value.length == 1) {
+                              code =
+                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
                               FocusScope.of(context).nextFocus();
                             }
                           },
                           onSaved: (pin2) {},
+                          controller: character2Controller,
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headline6,
@@ -132,9 +156,12 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                         child: TextFormField(
                           onChanged: (value) {
                             if (value.length == 1) {
+                              code =
+                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
                               FocusScope.of(context).nextFocus();
                             }
                           },
+                          controller: character3Controller,
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headline6,
@@ -152,9 +179,13 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                         child: TextFormField(
                           onChanged: (value) {
                             if (value.length == 1) {
+                              code =
+                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
                               FocusScope.of(context).nextFocus();
+                              verify();
                             }
                           },
+                          controller: character4Controller,
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headline6,
@@ -174,26 +205,27 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                   children: <Widget>[
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const RegisterPage(),
-                            ),
-                          );
-                        },
+                        onPressed: sendSms,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           padding: const EdgeInsets.all(13),
                         ),
-                        child: Text(
-                          'Renvoyer',
-                          style: GoogleFonts.ubuntu(
-                            color: dBlue,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: dBlue,
+                                ),
+                              )
+                            : Text(
+                                'Renvoyer',
+                                style: GoogleFonts.ubuntu(
+                                  color: dBlue,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(
@@ -201,25 +233,26 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                     ),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomePage(),
-                            ),
-                          );
-                        },
+                        onPressed: verify,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: dBlue,
                           padding: const EdgeInsets.all(13),
                         ),
-                        child: Text(
-                          'Valider',
-                          style: GoogleFonts.ubuntu(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                'Valider',
+                                style: GoogleFonts.ubuntu(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                       ),
                     )
                   ],
@@ -230,5 +263,53 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
         ),
       ),
     );
+  }
+
+  void sendSms() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var response = await Provider.of<Auth>(context, listen: false)
+        .sendSms(phone: widget.phone, resetPassword: false);
+
+    if (response.statusCode == 201) {
+      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      currentCode = "${jsonResponse['data']['code']}";
+      print(currentCode);
+    } else {
+      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      FlashMessage.showSnackBar(jsonResponse['message'], context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void verify() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    if (currentCode == code) {
+      var response = await Provider.of<Auth>(context, listen: false)
+          .register(creds: widget.creds!);
+      if (response.statusCode == 201) {
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      } else {
+        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        FlashMessage.showSnackBar(jsonResponse['message'], context);
+      }
+    } else {
+      FlashMessage.showSnackBar("Incorrect code", context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
