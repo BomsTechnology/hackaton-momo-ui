@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/onboarding_page.dart';
+import 'package:hackaton_momo/pages/qr_code_page.dart';
+import 'package:hackaton_momo/pages/scanner_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
 import 'package:provider/provider.dart';
 
@@ -25,14 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
           child: CircleAvatar(
             radius: 18,
             backgroundColor: Colors.white,
-            child: Text(
-              'SM',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ubuntu(
-                color: dBlue,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
+            child: Consumer<Auth>(
+              builder: (context, auth, child) {
+                var names = auth.user.name.split(" ");
+                return Text(
+                  '${names[0][0].toUpperCase()}${names.length > 1 ? names[1][0].toUpperCase() : ""}',
+                  style: GoogleFonts.ubuntu(
+                    fontWeight: FontWeight.w700,
+                    color: dBlue,
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -43,7 +48,14 @@ class _HomeScreenState extends State<HomeScreen> {
               radius: 22,
               backgroundColor: Colors.white,
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const QrCodePage(),
+                    ),
+                  );
+                },
                 icon: const Icon(
                   Icons.qr_code_rounded,
                   color: dBlue,
@@ -93,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buildCard(
-                  action: const HomeScreen(),
+                  action: const ScannerPage(),
                   imagePath: 'assets/transfert.png',
                   label: 'Transférer de l\'argent',
                 ),
@@ -101,10 +113,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 20,
                 ),
                 buildCard(
-                  action: const HomeScreen(),
+                  action: const ScannerPage(),
                   imagePath: 'assets/marchand.png',
                   label: 'Paiement marchand',
                 )
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                buildCard(
+                  action: const ScannerPage(),
+                  imagePath: 'assets/transport.png',
+                  label: 'Paiement transport',
+                ),
               ],
             ),
             const SizedBox(
@@ -125,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buildCard(
-                  action: const HomeScreen(),
+                  action: const ScannerPage(),
                   imagePath: 'assets/depot.png',
                   label: 'Effectuer un dépôt d\'argent',
                 ),
@@ -133,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 20,
                 ),
                 buildCard(
-                  action: const HomeScreen(),
+                  action: const ScannerPage(),
                   imagePath: 'assets/retrait.png',
                   label: 'Effectuer un retrait d\'argent',
                 ),
@@ -157,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buildCard(
-                  action: const HomeScreen(),
+                  action: const ScannerPage(),
                   imagePath: 'assets/carte1.png',
                   label: 'Lier une carte de crédit',
                 ),
@@ -165,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 20,
                 ),
                 buildCard(
-                  action: const HomeScreen(),
+                  action: const ScannerPage(),
                   imagePath: 'assets/carte2.png',
                   label: 'Créer une carte virtuelle',
                 ),
@@ -197,7 +222,14 @@ class _HomeScreenState extends State<HomeScreen> {
     required Widget action,
   }) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => action,
+          ),
+        );
+      },
       child: Container(
         height: 120,
         width: 120,

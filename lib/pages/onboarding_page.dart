@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/login_page.dart';
-import 'package:provider/provider.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});

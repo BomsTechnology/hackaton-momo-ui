@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/login_page.dart';
+import 'package:flutter/services.dart';
 import 'package:hackaton_momo/pages/sms_verification_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
 import 'package:hackaton_momo/utils/flash_message.dart';
@@ -136,6 +137,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           controller: phoneController,
                           textInputAction: TextInputAction.next,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           keyboardType: TextInputType.number,
                           validator: (value) => value != null &&
                                   value.replaceAll(" ", "").length == 9 &&
@@ -212,10 +216,15 @@ class _RegisterPageState extends State<RegisterPage> {
                           textInputAction: TextInputAction.next,
                           obscureText: _obscureText,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(4),
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           validator: (value) =>
-                              value != null && value.length > 7
+                              value != null && value.length == 4
                                   ? null
-                                  : 'Entrez au min. 8 caractères',
+                                  : 'Code d\'accès incorrect',
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(10),
                             border: const OutlineInputBorder(),

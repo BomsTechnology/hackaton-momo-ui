@@ -111,7 +111,9 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                               code =
                                   "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
                               FocusScope.of(context).nextFocus();
-                            } else {}
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                            }
                           },
                           controller: character1Controller,
                           onSaved: (pin1) {},
@@ -135,6 +137,8 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                               code =
                                   "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
                               FocusScope.of(context).nextFocus();
+                            } else {
+                              FocusScope.of(context).previousFocus();
                             }
                           },
                           onSaved: (pin2) {},
@@ -159,6 +163,8 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                               code =
                                   "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
                               FocusScope.of(context).nextFocus();
+                            } else {
+                              FocusScope.of(context).previousFocus();
                             }
                           },
                           controller: character3Controller,
@@ -183,6 +189,8 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                                   "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
                               FocusScope.of(context).nextFocus();
                               verify();
+                            } else {
+                              FocusScope.of(context).previousFocus();
                             }
                           },
                           controller: character4Controller,
@@ -274,6 +282,7 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
 
     if (response.statusCode == 201) {
       var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      print("${jsonResponse['data']['code']}");
       currentCode = "${jsonResponse['data']['code']}";
       print(currentCode);
     } else {

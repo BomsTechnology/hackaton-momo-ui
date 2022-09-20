@@ -80,6 +80,14 @@ class Auth extends ChangeNotifier {
         headers: _setHeaders());
   }
 
+  localLogin() async {
+    await _getToken();
+    token = prefs.getString('token')!;
+    _user = User.fromJson(jsonDecode(prefs.getString('user')!));
+    _isLoggedIn = true;
+    notifyListeners();
+  }
+
   verification({required String phone, required String code}) async {
     await _getToken();
     var url = Uri.https(_url, "/api/auth/send-verification-sms/$phone");

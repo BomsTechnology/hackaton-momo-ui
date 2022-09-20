@@ -55,8 +55,8 @@ class _StartedState extends State<Started> {
 
   @override
   void initState() {
-    super.initState();
     _checkIfLoggedIn();
+    super.initState();
   }
 
   Future<void> _checkIfLoggedIn() async {
@@ -66,6 +66,7 @@ class _StartedState extends State<Started> {
       setState(() {
         isAuth = true;
       });
+      await Provider.of<Auth>(context, listen: false).localLogin();
     }
   }
 

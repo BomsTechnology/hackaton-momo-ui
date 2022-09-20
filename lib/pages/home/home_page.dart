@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/home/screens/home_screen.dart';
 import 'package:hackaton_momo/pages/home/screens/listing_screen.dart';
 import 'package:hackaton_momo/pages/home/tabbar_widget.dart';
+import 'package:hackaton_momo/pages/qr_code_page.dart';
+import 'package:hackaton_momo/services/auth.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,6 +20,14 @@ class _HomePageState extends State<HomePage> {
     const HomeScreen(),
     const ListingScreen(),
   ];
+
+  @override
+  void initState() {
+    localLogin();
+    super.initState();
+  }
+
+  Future<void> localLogin() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +56,14 @@ class _HomePageState extends State<HomePage> {
             Icons.qr_code_rounded,
             color: dYellow,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const QrCodePage(),
+              ),
+            );
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),

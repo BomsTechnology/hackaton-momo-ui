@@ -10,6 +10,7 @@ import 'package:hackaton_momo/pages/sms_verification_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
 import 'package:hackaton_momo/utils/flash_message.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -100,6 +101,9 @@ class _LoginPageState extends State<LoginPage> {
                         controller: phoneController,
                         textInputAction: TextInputAction.next,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         keyboardType: TextInputType.number,
                         validator: (value) => value != null &&
                                 value.length == 9 &&
@@ -137,9 +141,14 @@ class _LoginPageState extends State<LoginPage> {
                         textInputAction: TextInputAction.next,
                         obscureText: _obscureText,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) => value != null && value.length > 7
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(4),
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        validator: (value) => value != null && value.length == 4
                             ? null
-                            : 'Entrez au min. 8 caractères',
+                            : 'Code d\'accès incorrect',
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
                           border: const OutlineInputBorder(),

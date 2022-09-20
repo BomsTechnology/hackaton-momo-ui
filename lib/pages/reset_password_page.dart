@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 
@@ -72,9 +73,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         textInputAction: TextInputAction.next,
                         obscureText: _obscureText,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) => value != null && value.length > 7
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(4),
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        validator: (value) => value != null && value.length == 4
                             ? null
-                            : 'Entrez au min. 8 caractères',
+                            : 'Code d\'accès incorrect',
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
                           border: const OutlineInputBorder(),
