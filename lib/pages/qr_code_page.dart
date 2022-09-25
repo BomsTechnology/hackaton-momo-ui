@@ -58,7 +58,7 @@ class _QrCodePageState extends State<QrCodePage> {
       body: Consumer<Auth>(
         builder: (context, auth, child) {
           var message =
-              "${auth.user.type} ${auth.user.name} ${auth.user.phone}";
+              "${auth.user.type} ${auth.user.name.replaceAll(" ", "")} ${auth.user.phone}";
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
             width: double.infinity,

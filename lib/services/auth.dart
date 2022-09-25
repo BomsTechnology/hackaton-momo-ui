@@ -99,12 +99,18 @@ class Auth extends ChangeNotifier {
     return response;
   }
 
+  listingTransaction() async {
+    await _getToken();
+    var url = Uri.https(_url, '/api/transactions/${user.id}');
+    var response = await http.get(url, headers: _setHeaders());
+    return response;
+  }
+
   collect({required Map<String, dynamic> data}) async {
     await _getToken();
     var url = Uri.https(_url, '/api/transactions/collect');
     var response =
         await http.post(url, body: jsonEncode(data), headers: _setHeaders());
-    print(response);
     return response;
   }
 

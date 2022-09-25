@@ -46,6 +46,7 @@ dependencies:
   local_auth: ^2.1.2
   internet_connection_checker: ^1.0.0+1
   connectivity_plus: ^2.3.7
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

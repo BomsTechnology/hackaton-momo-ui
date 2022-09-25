@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
+import 'package:hackaton_momo/models/transaction.dart';
 import 'package:hackaton_momo/pages/error_page.dart';
 import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:hackaton_momo/pages/scanner_page.dart';
@@ -436,14 +437,14 @@ class _EnterPinPageState extends State<EnterPinPage> {
           if (response.statusCode == 201) {
             var jsonResponse =
                 jsonDecode(response.body) as Map<String, dynamic>;
+            Transaction transaction =
+                Transaction.fromJson(jsonResponse['data']['transaction']);
             // ignore: use_build_context_synchronously
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SuccessPage(
-                  info: widget.data,
-                  // transaction: jsonResponse['data']['user']
-                ),
+                builder: (context) =>
+                    SuccessPage(info: widget.data, transaction: transaction),
               ),
             );
           } else {
@@ -458,6 +459,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
               MaterialPageRoute(
                 builder: (context) => ErrorPage(
                   message: jsonResponse['message'],
+                  info: widget.data,
                 ),
               ),
             );
@@ -473,6 +475,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
             MaterialPageRoute(
               builder: (context) => ErrorPage(
                 message: jsonResponse['message'],
+                info: widget.data,
               ),
             ),
           );
