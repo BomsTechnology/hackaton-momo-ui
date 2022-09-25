@@ -42,7 +42,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
     auth.isDeviceSupported().then((bool isSupported) {
       setState(() => _supportState =
           isSupported ? _SupportState.supported : _SupportState.unsupported);
-      if (isSupported) {
+      if (isSupported && user?.withBiomrtric == true) {
         _authenticateWithBiometrics();
       }
     });
@@ -114,6 +114,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
             child: Padding(
               padding: const EdgeInsets.all(18),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Spacer(),
                   Image.asset(
@@ -122,6 +123,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                   ),
                   Text(
                     'Entrez votre code d\'accès',
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.ubuntu(
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
@@ -196,7 +198,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                             InkWell(
                                 onTap: () => enterDigit(0),
                                 child: SizedBox(
-                                  width: 60,
+                                  width: 50,
                                   height: 30,
                                   child: Text(
                                     '0',
@@ -211,7 +213,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                             InkWell(
                               onTap: () => enterDigit(1),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Text(
                                   '1',
@@ -227,7 +229,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                             InkWell(
                               onTap: () => enterDigit(2),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Text(
                                   '2',
@@ -243,7 +245,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                             InkWell(
                               onTap: () => enterDigit(3),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Text(
                                   '3',
@@ -267,7 +269,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                             InkWell(
                                 onTap: () => enterDigit(4),
                                 child: SizedBox(
-                                  width: 60,
+                                  width: 50,
                                   height: 30,
                                   child: Text(
                                     '4',
@@ -282,7 +284,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                             InkWell(
                               onTap: () => enterDigit(5),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Text(
                                   '5',
@@ -298,7 +300,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                             InkWell(
                               onTap: () => enterDigit(6),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Text(
                                   '6',
@@ -314,7 +316,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                             InkWell(
                               onTap: () => enterDigit(7),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Text(
                                   '7',
@@ -338,7 +340,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                             InkWell(
                                 onTap: () => enterDigit(8),
                                 child: SizedBox(
-                                  width: 60,
+                                  width: 50,
                                   height: 30,
                                   child: Text(
                                     '8',
@@ -353,7 +355,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
                             InkWell(
                               onTap: () => enterDigit(9),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Text(
                                   '9',
@@ -366,11 +368,12 @@ class _LockScreenPageState extends State<LockScreenPage> {
                                 ),
                               ),
                             ),
-                            if (_supportState == _SupportState.supported)
+                            if (_supportState == _SupportState.supported &&
+                                user?.withBiomrtric == true)
                               InkWell(
                                 onTap: _authenticateWithBiometrics,
                                 child: const SizedBox(
-                                  width: 60,
+                                  width: 50,
                                   height: 30,
                                   child: Icon(
                                     Icons.fingerprint,
@@ -378,10 +381,15 @@ class _LockScreenPageState extends State<LockScreenPage> {
                                   ),
                                 ),
                               ),
+                            if (user?.withBiomrtric == false)
+                              const SizedBox(
+                                width: 50,
+                                height: 30,
+                              ),
                             InkWell(
                               onTap: deleteDigit,
                               child: const SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Icon(
                                   Icons.backspace_rounded,
@@ -469,6 +477,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
             builder: (context) => const HomePage(),
           ),
         );
+        code = "";
       } else if (response.statusCode == 403) {
         // ignore: use_build_context_synchronously
         Navigator.push(

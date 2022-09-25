@@ -4,7 +4,8 @@ import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/home/home_page.dart';
 
 class ErrorPage extends StatefulWidget {
-  const ErrorPage({super.key});
+  const ErrorPage({super.key, required this.message});
+  final String message;
 
   @override
   State<ErrorPage> createState() => _ErrorPageState();

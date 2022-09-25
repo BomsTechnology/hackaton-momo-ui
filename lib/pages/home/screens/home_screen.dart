@@ -121,7 +121,9 @@ class _HomeScreenState extends State<HomeScreen> {
               // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buildCard(
-                  action: const AmountPage(),
+                  action: const AmountPage(
+                    type: "Transfert d'argent",
+                  ),
                   imagePath: 'assets/transfert.png',
                   label: 'Transfert d\'argent',
                 ),
@@ -132,7 +134,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context, auth, child) {
                     return auth.user.type != 'Marchand'
                         ? buildCard(
-                            action: const ScannerPage(),
+                            action: const AmountPage(
+                              type: "Paiement marchand",
+                            ),
                             imagePath: 'assets/marchand.png',
                             label: 'Paiement marchand',
                           )
@@ -151,7 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           buildCard(
-                            action: const ScannerPage(),
+                            action: const AmountPage(
+                              type: "Paiement transport",
+                            ),
                             imagePath: 'assets/transport.png',
                             label: 'Paiement transport',
                           ),
@@ -184,17 +190,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               buildCard(
-                                action: const ScannerPage(),
+                                action: const AmountPage(
+                                  type: "Dépôt d'argent",
+                                ),
                                 imagePath: 'assets/depot.png',
-                                label: 'Effectuer un dépôt d\'argent',
+                                label: 'Dépôt d\'argent',
                               ),
                               const SizedBox(
                                 width: 20,
                               ),
                               buildCard(
-                                action: const ScannerPage(),
+                                action: const AmountPage(
+                                  type: "Retrait d'argent",
+                                ),
                                 imagePath: 'assets/retrait.png',
-                                label: 'Effectuer un retrait d\'argent',
+                                label: 'Retrait d\'argent',
                               ),
                             ],
                           ),
@@ -203,6 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     : Container();
               },
             ),
+
             // const SizedBox(
             //   height: 50,
             // ),

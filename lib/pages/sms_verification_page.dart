@@ -70,7 +70,8 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                Row(
+                Wrap(
+                  spacing: 2,
                   children: [
                     Text(
                       '${widget.phone.substring(0, 5)}*****${widget.phone.substring(10)}',

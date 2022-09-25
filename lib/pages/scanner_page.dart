@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
+import 'package:hackaton_momo/pages/enter_pin_page.dart';
 import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
+import 'package:hackaton_momo/utils/flash_message.dart';
 
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'dart:io';
 
 class ScannerPage extends StatefulWidget {
-  const ScannerPage({super.key});
-
+  const ScannerPage({super.key, required this.type, required this.amount});
+  final String type;
+  final String amount;
   @override
   State<ScannerPage> createState() => _ScannerPageState();
 }
@@ -41,15 +44,37 @@ class _ScannerPageState extends State<ScannerPage> {
 
   void readQr() async {
     if (result != null) {
-      controller!.pauseCamera();
       print(result!.code);
+      var data = result!.code!.split(" ");
+      // if (data[2] == Provider.of<Auth>(context, listen: false).user.phone) {
+      //   FlashMessage.showSnackBar(
+      //       "Vous ne pouvez pas tranférer de l'argent sur votre propre numero",
+      //       context);
+      // }
+      // if (data[0] != "Personnel" &&
+      //     data[0] == Provider.of<Auth>(context, listen: false).user.type) {
+      //   FlashMessage.showSnackBar(
+      //       "Vous ne pouvez pas tranférer de l'argent au même type de compte",
+      //       context);
+      // }
+      data.add(widget.amount);
+      data.add(widget.type);
+      controller!.pauseCamera();
       controller!.dispose();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EnterPinPage(data: data),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    readQr();
+    Future.delayed(Duration.zero, () {
+      readQr();
+    });
     return SafeArea(
       child: Scaffold(
         body: Stack(alignment: Alignment.center, children: <Widget>[
@@ -63,6 +88,19 @@ class _ScannerPageState extends State<ScannerPage> {
               borderWidth: 10,
               cutOutSize: 250,
             ),
+          ),
+          Positioned(
+            bottom: 150,
+            child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  "Mes Contacts",
+                  style: GoogleFonts.ubuntu(color: Colors.white),
+                )),
           ),
           Positioned(
             bottom: 10,

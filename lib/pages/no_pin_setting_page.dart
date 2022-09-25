@@ -1,12 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
+import 'package:hackaton_momo/pages/account_page.dart';
 import 'package:hackaton_momo/pages/home/home_page.dart';
+import 'package:hackaton_momo/services/auth.dart';
+import 'package:hackaton_momo/utils/flash_message.dart';
+import 'package:provider/provider.dart';
 
 class NoPinSettingPage extends StatefulWidget {
-  const NoPinSettingPage({super.key});
+  const NoPinSettingPage(
+      {super.key, required this.value, required this.amount});
+  final bool value;
+  final String amount;
 
   @override
   State<NoPinSettingPage> createState() => _NoPinSettingPageState();
@@ -14,6 +23,15 @@ class NoPinSettingPage extends StatefulWidget {
 
 class _NoPinSettingPageState extends State<NoPinSettingPage> {
   bool nopin = true;
+  final amountController = TextEditingController();
+  bool _isLoading = false;
+  @override
+  void initState() {
+    nopin = widget.value;
+    amountController.text = widget.amount;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
@@ -97,69 +115,98 @@ class _NoPinSettingPageState extends State<NoPinSettingPage> {
             const SizedBox(
               height: 15,
             ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () {
-                    setState(() => nopin = !nopin);
-                  },
-                  child: Text(
-                    'Plafond de paiement',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.ubuntu(
-                      color: dGray,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
+            if (nopin)
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      setState(() => nopin = !nopin);
+                    },
+                    child: Text(
+                      'Plafond de paiement',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ubuntu(
+                        color: dGray,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 100,
-                  height: 40,
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      hintText: "250",
-                      suffix: Text("XFA", style: GoogleFonts.ubuntu()),
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                  SizedBox(
+                    width: 100,
+                    height: 40,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      controller: amountController,
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        hintText: "250",
+                        suffix: Text("XFA", style: GoogleFonts.ubuntu()),
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                      ),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             const Spacer(),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomePage(),
-                    ),
-                  );
-                },
+                onPressed: setNoPin,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: dBlue,
                   padding: const EdgeInsets.all(13),
                 ),
-                child: Text(
-                  'Enregistrer',
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        'Enregistrer',
+                        style: GoogleFonts.ubuntu(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void setNoPin() async {
+    Map<String, dynamic> data = {
+      'value': nopin,
+      'amount': amountController.text.trim(),
+    };
+    setState(() {
+      _isLoading = true;
+    });
+    var response =
+        await Provider.of<Auth>(context, listen: false).setNoPin(data: data);
+    if (response.statusCode == 201) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => const AccountPage(),
+          ));
+    } else {
+      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      FlashMessage.showSnackBar(jsonResponse['message'], context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -6,9 +8,20 @@ import 'package:hackaton_momo/pages/error_page.dart';
 import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:hackaton_momo/pages/scanner_page.dart';
 import 'package:hackaton_momo/pages/success_page.dart';
+import 'package:hackaton_momo/services/auth.dart';
+import 'package:hackaton_momo/utils/flash_message.dart';
+import 'package:provider/provider.dart';
 
 class EnterPinPage extends StatefulWidget {
-  const EnterPinPage({super.key});
+  const EnterPinPage({
+    super.key,
+    required this.data,
+    // required this.type,
+    // required this.amount
+  });
+  final List data;
+  // final String type;
+  // final String amount;
 
   @override
   State<EnterPinPage> createState() => _EnterPinPageState();
@@ -18,6 +31,12 @@ class _EnterPinPageState extends State<EnterPinPage> {
   bool _isLoading = false;
   String code = "";
   @override
+  void initState() {
+    print(widget.data);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -26,6 +45,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
           child: Padding(
             padding: const EdgeInsets.all(18),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Spacer(),
                 Container(
@@ -56,7 +76,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                   height: 25,
                 ),
                 Text(
-                  "2000 XFA",
+                  "${widget.data[3]} XFA",
                   style: GoogleFonts.ubuntu(
                     fontWeight: FontWeight.w700,
                     fontSize: 20,
@@ -67,7 +87,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                   height: 5,
                 ),
                 Text(
-                  "Bondico02 - 237658401181",
+                  "${widget.data[1]} - ${widget.data[2]}",
                   style: GoogleFonts.ubuntu(
                     fontWeight: FontWeight.w500,
                     fontSize: 15,
@@ -141,7 +161,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                               onTap: () => enterDigit(0),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Text(
                                   '0',
@@ -156,7 +176,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                             onTap: () => enterDigit(1),
                             child: SizedBox(
-                              width: 60,
+                              width: 50,
                               height: 30,
                               child: Text(
                                 '1',
@@ -172,7 +192,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                             onTap: () => enterDigit(2),
                             child: SizedBox(
-                              width: 60,
+                              width: 50,
                               height: 30,
                               child: Text(
                                 '2',
@@ -188,7 +208,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                             onTap: () => enterDigit(3),
                             child: SizedBox(
-                              width: 60,
+                              width: 50,
                               height: 30,
                               child: Text(
                                 '3',
@@ -212,7 +232,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                               onTap: () => enterDigit(4),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Text(
                                   '4',
@@ -227,7 +247,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                             onTap: () => enterDigit(5),
                             child: SizedBox(
-                              width: 60,
+                              width: 50,
                               height: 30,
                               child: Text(
                                 '5',
@@ -243,7 +263,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                             onTap: () => enterDigit(6),
                             child: SizedBox(
-                              width: 60,
+                              width: 50,
                               height: 30,
                               child: Text(
                                 '6',
@@ -259,7 +279,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                             onTap: () => enterDigit(7),
                             child: SizedBox(
-                              width: 60,
+                              width: 50,
                               height: 30,
                               child: Text(
                                 '7',
@@ -283,7 +303,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                               onTap: () => enterDigit(8),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 height: 30,
                                 child: Text(
                                   '8',
@@ -298,7 +318,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                             onTap: () => enterDigit(9),
                             child: SizedBox(
-                              width: 60,
+                              width: 50,
                               height: 30,
                               child: Text(
                                 '9',
@@ -314,7 +334,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                           InkWell(
                             onTap: deleteDigit,
                             child: const SizedBox(
-                              width: 60,
+                              width: 50,
                               height: 30,
                               child: Icon(
                                 Icons.backspace_rounded,
@@ -323,7 +343,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                             ),
                           ),
                           const SizedBox(
-                            width: 60,
+                            width: 50,
                             height: 30,
                           ),
                         ],
@@ -337,14 +357,7 @@ class _EnterPinPageState extends State<EnterPinPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ErrorPage(),
-                        ),
-                      );
-                    },
+                    onPressed: validate,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: dBlue,
                       padding: const EdgeInsets.all(13),
@@ -390,5 +403,90 @@ class _EnterPinPageState extends State<EnterPinPage> {
       });
     }
     print(code);
+  }
+
+  void validate() async {
+    Map<String, dynamic> creds = {
+      'phone': Provider.of<Auth>(context, listen: false).user.phone,
+      'password': code,
+    };
+
+    if (code.length == 4) {
+      setState(() {
+        _isLoading = true;
+      });
+      var response = await Provider.of<Auth>(context, listen: false)
+          .verifyPass(creds: creds, save: false);
+
+      if (response.statusCode == 201) {
+        Map<String, dynamic> data = {
+          'amount': widget.data[3],
+          'currency': 'EUR',
+          'payerMessage':
+              "${widget.data[3]} from ${Provider.of<Auth>(context, listen: false).user.phone} to ${widget.data[2]}",
+          'type': widget.data[4],
+          'sender': Provider.of<Auth>(context, listen: false).user.phone,
+          'receiver': widget.data[2],
+        };
+        var response =
+            await Provider.of<Auth>(context, listen: false).collect(data: data);
+        if (response.statusCode == 201) {
+          var response = await Provider.of<Auth>(context, listen: false)
+              .deposit(data: data);
+          if (response.statusCode == 201) {
+            var jsonResponse =
+                jsonDecode(response.body) as Map<String, dynamic>;
+            // ignore: use_build_context_synchronously
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SuccessPage(
+                  info: widget.data,
+                  // transaction: jsonResponse['data']['user']
+                ),
+              ),
+            );
+          } else {
+            var jsonResponse =
+                jsonDecode(response.body) as Map<String, dynamic>;
+            FlashMessage.showSnackBar(jsonResponse['message'], context);
+            setState(() {
+              code = "";
+            });
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ErrorPage(
+                  message: jsonResponse['message'],
+                ),
+              ),
+            );
+          }
+        } else {
+          var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+          FlashMessage.showSnackBar(jsonResponse['message'], context);
+          setState(() {
+            code = "";
+          });
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(
+                message: jsonResponse['message'],
+              ),
+            ),
+          );
+        }
+      } else {
+        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        FlashMessage.showSnackBar("Pin Incorrect", context);
+        setState(() {
+          code = "";
+        });
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }

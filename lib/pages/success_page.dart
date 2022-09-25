@@ -6,7 +6,8 @@ import 'package:hackaton_momo/pages/home/home_page.dart';
 import 'package:hackaton_momo/pages/no_internet_page.dart';
 
 class SuccessPage extends StatefulWidget {
-  const SuccessPage({super.key});
+  const SuccessPage({super.key, required this.info});
+  final List info;
 
   @override
   State<SuccessPage> createState() => _SuccessPageState();

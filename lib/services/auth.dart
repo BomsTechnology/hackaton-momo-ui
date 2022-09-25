@@ -34,6 +34,7 @@ class Auth extends ChangeNotifier {
         await http.post(url, body: jsonEncode(creds), headers: _setHeaders());
     if (response.statusCode == 201) {
       var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+
       _user = User.fromJson(jsonResponse['data']['user']);
       token = jsonResponse['data']['token'];
       await prefs.setString('user', jsonEncode(_user));
@@ -44,12 +45,12 @@ class Auth extends ChangeNotifier {
     return response;
   }
 
-  verifyPass({required Map<String, dynamic> creds}) async {
+  verifyPass({required Map<String, dynamic> creds, bool save = true}) async {
     await _getToken();
     var url = Uri.https(_url, '/api/auth/verify-pass');
     var response =
         await http.post(url, body: jsonEncode(creds), headers: _setHeaders());
-    if (response.statusCode == 201) {
+    if (response.statusCode == 201 && save) {
       var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
       _user = User.fromJson(jsonResponse['data']['user']);
       await prefs.setString('user', jsonEncode(_user));
@@ -70,6 +71,47 @@ class Auth extends ChangeNotifier {
       notifyListeners();
     }
     return response;
+  }
+
+  setWithBiometric({required value}) async {
+    await _getToken();
+    var url = Uri.https(_url, '/api/auth/set-with-biometric/${user.phone}');
+    var response = await http.post(url,
+        body: jsonEncode({"value": value}), headers: _setHeaders());
+    if (response.statusCode == 201) {
+      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      _user = User.fromJson(jsonResponse['data']['user']);
+      notifyListeners();
+    }
+    return response;
+  }
+
+  setNoPin({required Map<String, dynamic> data}) async {
+    await _getToken();
+    var url = Uri.https(_url, '/api/auth/set-no-pin/${user.phone}');
+    var response =
+        await http.post(url, body: jsonEncode(data), headers: _setHeaders());
+    if (response.statusCode == 201) {
+      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      _user = User.fromJson(jsonResponse['data']['user']);
+      notifyListeners();
+    }
+    return response;
+  }
+
+  collect({required Map<String, dynamic> data}) async {
+    await _getToken();
+    var url = Uri.https(_url, '/api/transactions/collect');
+    var response =
+        await http.post(url, body: jsonEncode(data), headers: _setHeaders());
+    print(response);
+    return response;
+  }
+
+  deposit({required Map<String, dynamic> data}) async {
+    await _getToken();
+    var url = Uri.https(_url, '/api/transactions/deposit');
+    return await http.post(url, body: jsonEncode(data), headers: _setHeaders());
   }
 
   register({required Map<String, dynamic> creds}) async {

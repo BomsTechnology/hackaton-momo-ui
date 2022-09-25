@@ -81,7 +81,7 @@ class _StartedState extends State<Started> {
 
   @override
   void dispose() {
-    subscription.cancel();
+    // subscription.cancel();
     super.dispose();
   }
 

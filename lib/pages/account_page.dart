@@ -111,7 +111,7 @@ class _AccountPageState extends State<AccountPage> {
                     "Changer le code d'accès",
                     style: GoogleFonts.ubuntu(
                       color: dGray,
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -138,7 +138,14 @@ class _AccountPageState extends State<AccountPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const NoPinSettingPage(),
+                          builder: (context) => NoPinSettingPage(
+                            value: Provider.of<Auth>(context, listen: false)
+                                .user
+                                .noPin,
+                            amount: Provider.of<Auth>(context, listen: false)
+                                .user
+                                .amountNoPin,
+                          ),
                         ),
                       );
                     },
@@ -149,12 +156,14 @@ class _AccountPageState extends State<AccountPage> {
                           "Paiement sans pin",
                           style: GoogleFonts.ubuntu(
                             color: dGray,
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(
-                          "Désactivé",
+                          Provider.of<Auth>(context, listen: false).user.noPin
+                              ? "Activé"
+                              : "Désactivé",
                           style: GoogleFonts.ubuntu(
                             color: Colors.grey.shade400,
                             fontSize: 13,
@@ -173,7 +182,10 @@ class _AccountPageState extends State<AccountPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const BiometricAuthPage(),
+                      builder: (context) => BiometricAuthPage(
+                          value: Provider.of<Auth>(context, listen: false)
+                              .user
+                              .withBiomrtric),
                     ),
                   );
                 },
@@ -200,12 +212,16 @@ class _AccountPageState extends State<AccountPage> {
                           "Authentification Biométrique",
                           style: GoogleFonts.ubuntu(
                             color: dGray,
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(
-                          "Activé",
+                          Provider.of<Auth>(context, listen: false)
+                                  .user
+                                  .withBiomrtric
+                              ? "Activé"
+                              : "Désactivé",
                           style: GoogleFonts.ubuntu(
                             color: Colors.grey.shade400,
                             fontSize: 13,
@@ -246,7 +262,7 @@ class _AccountPageState extends State<AccountPage> {
                     "A Propos de nous",
                     style: GoogleFonts.ubuntu(
                       color: dGray,
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -286,7 +302,7 @@ class _AccountPageState extends State<AccountPage> {
                       "Déconnexion",
                       style: GoogleFonts.ubuntu(
                         color: Colors.red,
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.w700,
                       ),
                     ),

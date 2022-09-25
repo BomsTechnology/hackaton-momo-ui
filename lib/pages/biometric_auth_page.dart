@@ -1,9 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
+import 'package:hackaton_momo/pages/account_page.dart';
+import 'package:hackaton_momo/pages/home/home_page.dart';
+import 'package:hackaton_momo/services/auth.dart';
+import 'package:hackaton_momo/utils/flash_message.dart';
+import 'package:provider/provider.dart';
 
 class BiometricAuthPage extends StatefulWidget {
-  const BiometricAuthPage({super.key});
+  const BiometricAuthPage({super.key, required this.value});
+  final bool value;
 
   @override
   State<BiometricAuthPage> createState() => _BiometricAuthPageState();
@@ -11,6 +19,13 @@ class BiometricAuthPage extends StatefulWidget {
 
 class _BiometricAuthPageState extends State<BiometricAuthPage> {
   bool withBiometric = false;
+  bool _isLoading = false;
+  @override
+  void initState() {
+    withBiometric = widget.value;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,23 +107,53 @@ class _BiometricAuthPageState extends State<BiometricAuthPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: setWithBiometric,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: dBlue,
                   padding: const EdgeInsets.all(13),
                 ),
-                child: Text(
-                  'Enregistrer',
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        'Enregistrer',
+                        style: GoogleFonts.ubuntu(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void setWithBiometric() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var response = await Provider.of<Auth>(context, listen: false)
+        .setWithBiometric(value: withBiometric);
+    if (response.statusCode == 201) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => const AccountPage(),
+          ));
+    } else {
+      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      FlashMessage.showSnackBar(jsonResponse['message'], context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
