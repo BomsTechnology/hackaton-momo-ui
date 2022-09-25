@@ -44,18 +44,31 @@ dependencies:
   qr_code_scanner: ^1.0.1
   flutter_screen_lock: ^7.0.4
   local_auth: ^2.1.2
-  internet_connectivity_checker: ^0.1.0
+  internet_connection_checker: ^1.0.0+1
+  connectivity_plus: ^2.3.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^2.2.9
+  flutter_launcher_icons: ^0.10.0
+
+  flutter_lints: ^2.0.0
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/logo2.png
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo2.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

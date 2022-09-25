@@ -5,8 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/home/home_page.dart';
+import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
 import 'package:hackaton_momo/utils/flash_message.dart';
+
 import 'package:provider/provider.dart';
 
 class SmsVerificationPage extends StatefulWidget {
@@ -299,7 +301,7 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
       _isLoading = true;
     });
 
-    if(!widget.creds){
+    if (widget.creds == null) {
       var response = await Provider.of<Auth>(context, listen: false)
           .verification(code: currentCode, phone: widget.phone);
       if (response.statusCode == 201) {
@@ -314,27 +316,26 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
         var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
         FlashMessage.showSnackBar(jsonResponse['message'], context);
       }
-    }else{
-      if (currentCode == code) {
-      var response = await Provider.of<Auth>(context, listen: false)
-          .register(creds: widget.creds!);
-      if (response.statusCode == 201) {
-        // ignore: use_build_context_synchronously
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomePage(),
-          ),
-        );
-      } else {
-        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-        FlashMessage.showSnackBar(jsonResponse['message'], context);
-      }
     } else {
-      FlashMessage.showSnackBar("Incorrect code", context);
+      if (currentCode == code) {
+        var response = await Provider.of<Auth>(context, listen: false)
+            .register(creds: widget.creds!);
+        if (response.statusCode == 201) {
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomePage(),
+            ),
+          );
+        } else {
+          var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+          FlashMessage.showSnackBar(jsonResponse['message'], context);
+        }
+      } else {
+        FlashMessage.showSnackBar("Incorrect code", context);
+      }
     }
-    }
-
 
     setState(() {
       _isLoading = false;

@@ -3,8 +3,10 @@ import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/home/screens/home_screen.dart';
 import 'package:hackaton_momo/pages/home/screens/listing_screen.dart';
 import 'package:hackaton_momo/pages/home/tabbar_widget.dart';
+import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:hackaton_momo/pages/qr_code_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
+
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {

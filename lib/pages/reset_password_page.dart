@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
+import 'package:hackaton_momo/pages/no_internet_page.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key});
@@ -24,6 +25,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -123,5 +125,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         ),
       ),
     );
+    //     } else if (status == ConnectivityStatus.offine) {
+    //       return const NoInternetPage();
+    //     } else {
+    //       // status == ConnectivityStatus.offline
+    //       return const Scaffold(
+    //           backgroundColor: Colors.white,
+    //           body: Center(
+    //             child: SizedBox(
+    //               width: 25,
+    //               height: 25,
+    //               child: CircularProgressIndicator(strokeWidth: 2),
+    //             ),
+    //           ));
+    //     }
+    //   },
+    // );
   }
 }

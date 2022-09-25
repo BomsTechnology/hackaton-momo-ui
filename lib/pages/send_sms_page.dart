@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
+import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:hackaton_momo/pages/reset_password_page.dart';
 import 'package:hackaton_momo/utils/flash_message.dart';
 
@@ -26,6 +27,7 @@ class _SendSmsPageState extends State<SendSmsPage> {
     "677",
     "678",
     "679",
+    "680",
     "650",
     "651",
     "652",
@@ -42,6 +44,7 @@ class _SendSmsPageState extends State<SendSmsPage> {
   @override
   Widget build(BuildContext context) {
     final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

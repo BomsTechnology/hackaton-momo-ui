@@ -1,9 +1,14 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hackaton_momo/pages/home/home_page.dart';
 import 'package:hackaton_momo/pages/lock_screen_page.dart';
+import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:hackaton_momo/pages/onboarding_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -55,22 +60,29 @@ class Started extends StatefulWidget {
 
 class _StartedState extends State<Started> {
   bool isAuth = false;
-  Future<void> localAuth(BuildContext context) async {
-    final localAuth = LocalAuthentication();
-    final didAuthenticate = await localAuth.authenticate(
-        localizedReason: 'Please authenticate',
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-        ));
-    if (didAuthenticate) {
-      Navigator.pop(context);
-    }
+  late StreamSubscription subscription;
+  bool hasInternet = false;
+
+  getConnectivity() {
+    subscription = InternetConnectionChecker().onStatusChange.listen((status) {
+      final hasInternet = status == InternetConnectionStatus.connected;
+      setState(() {
+        this.hasInternet = hasInternet;
+      });
+    });
   }
 
   @override
   void initState() {
+    getConnectivity();
     _checkIfLoggedIn();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   Future<void> _checkIfLoggedIn() async {
@@ -85,6 +97,10 @@ class _StartedState extends State<Started> {
 
   @override
   Widget build(BuildContext context) {
-    return isAuth ? const LockScreenPage() : const OnboardingPage();
+    if (hasInternet) {
+      return isAuth ? const LockScreenPage() : const OnboardingPage();
+    } else {
+      return const NoInternetPage();
+    }
   }
 }

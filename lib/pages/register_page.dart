@@ -5,9 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/login_page.dart';
 import 'package:flutter/services.dart';
+import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:hackaton_momo/pages/sms_verification_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
 import 'package:hackaton_momo/utils/flash_message.dart';
+
 import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -25,7 +27,8 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _isLoading = false;
   final List<String> accountTypeItems = [
     "Personnel",
-    "Marchand / Transporteur",
+    "Marchand",
+    "Transporteur",
     "Callbox",
   ];
   final List correctNum = [
@@ -39,6 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
     "677",
     "678",
     "679",
+    "680",
     "650",
     "651",
     "652",
@@ -58,6 +62,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

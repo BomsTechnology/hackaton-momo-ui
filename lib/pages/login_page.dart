@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/home/home_page.dart';
+import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:hackaton_momo/pages/register_page.dart';
 import 'package:hackaton_momo/pages/send_sms_page.dart';
 import 'package:hackaton_momo/pages/sms_verification_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
 import 'package:hackaton_momo/utils/flash_message.dart';
+
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
@@ -36,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
     "677",
     "678",
     "679",
+    "680",
     "650",
     "651",
     "652",
@@ -53,6 +56,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final isKeyboard = MediaQuery.of(context).viewInsets.bottom != 0;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

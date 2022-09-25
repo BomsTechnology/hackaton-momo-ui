@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
+import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
+
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -55,7 +57,8 @@ class _QrCodePageState extends State<QrCodePage> {
       ),
       body: Consumer<Auth>(
         builder: (context, auth, child) {
-          var message = "${auth.user.name} ${auth.user.phone}";
+          var message =
+              "${auth.user.type} ${auth.user.name} ${auth.user.phone}";
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
             width: double.infinity,

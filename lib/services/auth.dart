@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:hackaton_momo/models/user.dart';
+import 'package:hackaton_momo/pages/loading_page.dart';
+import 'package:hackaton_momo/pages/no_internet_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +38,21 @@ class Auth extends ChangeNotifier {
       token = jsonResponse['data']['token'];
       await prefs.setString('user', jsonEncode(_user));
       await prefs.setString('token', token);
+      _isLoggedIn = true;
+      notifyListeners();
+    }
+    return response;
+  }
+
+  verifyPass({required Map<String, dynamic> creds}) async {
+    await _getToken();
+    var url = Uri.https(_url, '/api/auth/verify-pass');
+    var response =
+        await http.post(url, body: jsonEncode(creds), headers: _setHeaders());
+    if (response.statusCode == 201) {
+      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      _user = User.fromJson(jsonResponse['data']['user']);
+      await prefs.setString('user', jsonEncode(_user));
       _isLoggedIn = true;
       notifyListeners();
     }
@@ -90,7 +107,7 @@ class Auth extends ChangeNotifier {
 
   verification({required String phone, required String code}) async {
     await _getToken();
-    var url = Uri.https(_url, "/api/auth/send-verification-sms/$phone");
+    var url = Uri.https(_url, "/api/auth/verify-code/$phone");
     var response = await http.post(url,
         body: jsonEncode({"code": code}), headers: _setHeaders());
 
