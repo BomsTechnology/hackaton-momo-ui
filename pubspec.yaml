@@ -42,6 +42,9 @@ dependencies:
   http: ^0.13.5
   qr_flutter: ^4.0.0
   qr_code_scanner: ^1.0.1
+  flutter_screen_lock: ^7.0.4
+  local_auth: ^2.1.2
+  internet_connectivity_checker: ^0.1.0
 
 dev_dependencies:
   flutter_test:

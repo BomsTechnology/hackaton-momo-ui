@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hackaton_momo/pages/home/home_page.dart';
+import 'package:hackaton_momo/pages/lock_screen_page.dart';
 import 'package:hackaton_momo/pages/onboarding_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:local_auth/local_auth.dart';
 
 const dBlue = Color(0xFF0F6987);
 const bgGray = Color(0xFFB7D2DB);
@@ -52,6 +55,17 @@ class Started extends StatefulWidget {
 
 class _StartedState extends State<Started> {
   bool isAuth = false;
+  Future<void> localAuth(BuildContext context) async {
+    final localAuth = LocalAuthentication();
+    final didAuthenticate = await localAuth.authenticate(
+        localizedReason: 'Please authenticate',
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+        ));
+    if (didAuthenticate) {
+      Navigator.pop(context);
+    }
+  }
 
   @override
   void initState() {
@@ -66,12 +80,11 @@ class _StartedState extends State<Started> {
       setState(() {
         isAuth = true;
       });
-      await Provider.of<Auth>(context, listen: false).localLogin();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return isAuth ? const HomePage() : const OnboardingPage();
+    return isAuth ? const LockScreenPage() : const OnboardingPage();
   }
 }

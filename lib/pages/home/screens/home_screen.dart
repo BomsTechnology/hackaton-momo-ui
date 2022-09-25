@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter_screen_lock/flutter_screen_lock.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hackaton_momo/main.dart';
 import 'package:hackaton_momo/pages/onboarding_page.dart';
 import 'package:hackaton_momo/pages/qr_code_page.dart';
 import 'package:hackaton_momo/pages/scanner_page.dart';
 import 'package:hackaton_momo/services/auth.dart';
+
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,6 +21,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future<void> localAuth(BuildContext context) async {
+    final localAuth = LocalAuthentication();
+    final didAuthenticate = await localAuth.authenticate(
+        localizedReason: 'Please authenticate',
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+        ));
+    if (didAuthenticate) {
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,19 +214,45 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             ElevatedButton(
-                onPressed: () async {
-                  var response =
-                      await Provider.of<Auth>(context, listen: false).logout();
-                  if (response.statusCode == 201) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OnboardingPage(),
-                      ),
-                    );
-                  }
+              onPressed: () async {
+                var response =
+                    await Provider.of<Auth>(context, listen: false).logout();
+                if (response.statusCode == 201) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OnboardingPage(),
+                    ),
+                  );
+                }
+              },
+              child: const Text('Deconnexion'),
+            ),
+            ElevatedButton(
+              onPressed: () => screenLock(
+                context: context,
+                correctString: '1234',
+                customizedButtonChild: const Icon(
+                  Icons.fingerprint,
+                ),
+                customizedButtonTap: () async {
+                  await localAuth(context);
                 },
-                child: const Text('Deconnexion'))
+                didOpened: () async {
+                  await localAuth(context);
+                },
+              ),
+              child: const Text(
+                'use local_auth \n(Show local_auth when opened)',
+                textAlign: TextAlign.center,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await localAuth(context);
+              },
+              child: Text('Finger'),
+            )
           ],
         ),
       ),

@@ -299,7 +299,23 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
       _isLoading = true;
     });
 
-    if (currentCode == code) {
+    if(!widget.creds){
+      var response = await Provider.of<Auth>(context, listen: false)
+          .verification(code: currentCode, phone: widget.phone);
+      if (response.statusCode == 201) {
+        // ignore: use_build_context_synchronously
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      } else {
+        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        FlashMessage.showSnackBar(jsonResponse['message'], context);
+      }
+    }else{
+      if (currentCode == code) {
       var response = await Provider.of<Auth>(context, listen: false)
           .register(creds: widget.creds!);
       if (response.statusCode == 201) {
@@ -317,6 +333,9 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
     } else {
       FlashMessage.showSnackBar("Incorrect code", context);
     }
+    }
+
+
     setState(() {
       _isLoading = false;
     });
