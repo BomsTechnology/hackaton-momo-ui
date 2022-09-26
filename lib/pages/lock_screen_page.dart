@@ -93,6 +93,7 @@ class _LockScreenPageState extends State<LockScreenPage> {
       return;
     }
     if (authenticated) {
+      await Provider.of<Auth>(context, listen: false).localLogin();
       Navigator.push(
         context,
         MaterialPageRoute(
