@@ -5,7 +5,7 @@ class User {
   final String type;
   final String amountNoPin;
   final bool noPin;
-  final bool withBiomrtric;
+  bool? withBiomrtric;
 
   User(
     this.id,

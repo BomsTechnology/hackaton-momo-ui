@@ -127,7 +127,9 @@ class Auth extends ChangeNotifier {
         await http.post(url, body: jsonEncode(creds), headers: _setHeaders());
     if (response.statusCode == 201) {
       var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      print(jsonResponse['data']['user']);
       _user = User.fromJson(jsonResponse['data']['user']);
+
       token = jsonResponse['data']['token'];
       await prefs.setString('user', jsonEncode(_user));
       await prefs.setString('token', token);

@@ -185,7 +185,7 @@ class _AccountPageState extends State<AccountPage> {
                       builder: (context) => BiometricAuthPage(
                           value: Provider.of<Auth>(context, listen: false)
                               .user
-                              .withBiomrtric),
+                              .withBiomrtric!),
                     ),
                   );
                 },
@@ -219,7 +219,7 @@ class _AccountPageState extends State<AccountPage> {
                         Text(
                           Provider.of<Auth>(context, listen: false)
                                   .user
-                                  .withBiomrtric
+                                  .withBiomrtric!
                               ? "Activé"
                               : "Désactivé",
                           style: GoogleFonts.ubuntu(
